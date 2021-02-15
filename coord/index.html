@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ThreeJS 学习笔记</title>
+
+    <script src="../three.js"></script>
+    <script src="../TrackballControls.js"></script>
+
+    <style type="text/css">
+      html,
+      body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        position: relative;
+        font-family: 微软雅黑, 宋体, Verdana, Arial;
+        font-size: 16px;
+      }
+
+      .canvas-wrapper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="canvasWrapper" class="canvas-wrapper"></div>
+
+    <script>
+      // 场景
+      var scene = new THREE.Scene()
+
+      // 照相机
+      var camera = new THREE.OrthographicCamera(
+        (100 * window.innerWidth) / window.innerHeight / -2,
+        (100 * window.innerWidth) / window.innerHeight / 2,
+        100 / 2,
+        100 / -2,
+        1,
+        100
+      )
+      camera.position.set(0, 0, 30)
+      camera.lookAt(new THREE.Vector3(0, 0, 0))
+
+      var renderer = new THREE.WebGLRenderer({ antialias: true })
+      renderer.setClearColor(new THREE.Color(0x000000))
+      renderer.setPixelRatio(window.devicePixelRatio)
+      renderer.setSize(window.innerWidth, window.innerHeight)
+
+      // 将场景添加到 canvas 上
+      document
+        .getElementById('canvasWrapper')
+        .appendChild(this.renderer.domElement)
+
+      scene.add(new THREE.AxesHelper(12))
+
+      // 轨迹球控制器
+      var controls = new THREE.TrackballControls(
+        camera,
+        renderer.domElement
+      )
+      controls.rotateSpeed = 0.8
+      controls.zoomSpeed = 1.0
+      controls.panSpeed = 1.2
+      controls.staticMoving = true
+
+
+    var ball = new THREE.Mesh(
+      new THREE.SphereBufferGeometry(5, 6, 6),
+      new THREE.MeshBasicMaterial({
+        color: 'green',
+        wireframe: true,
+      })
+    )
+
+      ball.position.set(30, 0, 0)
+      ball.rotation.y = 0.3 * Math.PI
+      // ball.rotation.z = 0.3 * Math.PI
+      ball.add(new THREE.AxesHelper(15))
+      scene.add(ball)
+
+      animate()
+
+      var now = 0;
+      function animate() {
+        requestAnimationFrame(animate)
+
+        now += 30
+        if (now % 300 === 0) {
+          // 顺着某轴看去，顺时针为正
+          // 逆着某轴看去，顺时针为正
+
+          // ball.rotation.x += 0.1 * Math.PI
+          // ball.rotation.y += 0.1 * Math.PI
+           ball.rotation.z += 0.1 * Math.PI
+
+          // 沿着局部坐标系
+           // ball.rotateX(0.1 * Math.PI)
+           //ball.rotateY(0.1 * Math.PI)
+          // ball.rotateZ(0.1 * Math.PI)
+        }
+
+        controls.update()
+        renderer.render(scene, camera)
+      }
+    </script>
+  </body>
+</html>
